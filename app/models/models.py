@@ -23,6 +23,19 @@ class Sector(Base):
 
     stocks = relationship("Stock", back_populates="sector")
     likes = relationship("Like", back_populates="sector")
+    companies = relationship("Company", back_populates="sector")
+
+
+class Company(Base):
+    __tablename__ = "companies"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    code = Column(String, unique=True, index=True)
+    sector_id = Column(Integer, ForeignKey("sectors.id")) 
+    product = Column(String)
+
+    sector = relationship("Sector", back_populates="companies") 
 
 
 class Stock(Base):
