@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📊 관심 종목 리스트</h2>
+<table border="1">
+  <tr>
+    <th>날짜</th><th>섹터</th><th>종목명</th><th>코드</th>
+    <th>시가</th><th>종가</th><th>고가</th><th>저가</th><th>거래량</th>
+  </tr>
+  {% for stock in stocks %}
+  <tr>
+    <td>{{ stock.date }}</td>
+    <td>{{ stock.group }}</td>
+    <td>{{ stock.name }}</td>
+    <td>{{ stock.code }}</td>
+    <td>{{ stock.open }}</td>
+    <td>{{ stock.close }}</td>
+    <td>{{ stock.high }}</td>
+    <td>{{ stock.low }}</td>
+    <td>{{ stock.volume }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

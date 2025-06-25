@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📥 관심 종목 등록</h2>
+<form action="/add" method="post">
+  <input type="text" name="name" placeholder="종목명" required>
+  <input type="text" name="code" placeholder="종목코드" required>
+  <input type="text" name="group" placeholder="섹터" required>
+  <input type="date" name="date" required>
+  <input type="number" name="open" placeholder="시가" required>
+  <input type="number" name="close" placeholder="종가" required>
+  <input type="number" name="high" placeholder="고가" required>
+  <input type="number" name="low" placeholder="저가" required>
+  <input type="number" name="volume" placeholder="거래량" required>
+  <button type="submit">등록</button>
+</form>
+{% endblock %}
