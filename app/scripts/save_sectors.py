@@ -1,5 +1,6 @@
 import pandas as pd
 import requests
+from io import StringIO
 from app.database import SessionLocal
 from app.models.models import Sector
 
@@ -10,7 +11,7 @@ def fetch_krx_sectors():
     res = requests.get(url)
     res.encoding = "euc-kr" 
   
-    df = pd.read_html(res.text, header=0)[0]
+    df = pd.read_html(StringIO(res.text), header=0)[0]
     sector_names = df['업종'].dropna().unique().tolist()
     return sector_names
 
@@ -18,9 +19,9 @@ def fetch_krx_sectors():
 def save_sectors_to_db(sector_names):
     db = SessionLocal()
     for name in sector_names:
-        exists = db.query(Sector).filter_by(name=name).first()
+        exists = db.query(Sector).filter_by(sector_name=name).first()
         if not exists:
-            db.add(Sector(name=name))
+            db.add(Sector(sector_name=name))
     db.commit()
     db.close()
 
