@@ -1,5 +1,7 @@
 # Python
 __pycache__/
+*.py[cod]
+*$py.class
 
 # SQLite DB 파일
 *.db
