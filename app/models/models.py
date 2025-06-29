@@ -30,6 +30,7 @@ class Company(Base):
     id = Column(Integer, primary_key=True, index=True)
     company_name = Column(String, nullable=False)
     company_code = Column(String, unique=True, index=True)
+    isin_code = Column(String, unique=True, index=True) 
     sector_id = Column(Integer, ForeignKey("sectors.id"))
     product_description = Column(String)
     is_liked = Column(Boolean, default=False)
@@ -50,6 +51,8 @@ class Stock(Base):
     highest_price = Column(Float)
     lowest_price = Column(Float)
     trading_volume = Column(Integer)
+    trade_value = Column(Integer)
+    market_cap = Column(Integer)
 
     sector = relationship("Sector", back_populates="stocks")
 
