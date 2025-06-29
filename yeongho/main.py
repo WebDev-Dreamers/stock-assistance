@@ -12,7 +12,7 @@ import pandas as pd
 # --- 내부 모듈 임포트 ---
 from yeongho.crawler import load_keywords, collect_google_news_by_keywords
 from yeongho.aggregate_news import aggregate_news_counts
-from yeongho.plot_chart import generate_sector_charts, generate_keyword_charts
+from yeongho.plot_chart import generate_sector_charts, generate_keyword_charts, generate_issue_charts
 
 # --- FastAPI 앱 초기화 ---
 app = FastAPI()
@@ -79,69 +79,45 @@ async def generate_charts():
     try:
         generate_sector_charts()
         generate_keyword_charts()
+        generate_issue_charts()
         return JSONResponse(content={"status": "S", "message": "✅ 차트 생성 완료"})
     except Exception as e:
         return JSONResponse(status_code=500, content={"status": "E", "error": f"차트 생성 실패: {str(e)}"})
 
-# --------------------------------------------------
-# 🖼️ 시각화 이미지 렌더링 화면
-# --------------------------------------------------
-# @app.get("/")
-# def show_chart_index(request: Request):
-#     sector_dir = "yeongho/IMG"
-#     sector_files = os.listdir(sector_dir)
-
-#     # 섹터/키워드 구분 및 고유 이름만 추출
-#     names_set = set()
-#     for file in sector_files:
-#         if file.endswith(".png"):
-#             base = file.replace("_daily_1m.png", "").replace("_weekly_3m.png", "").replace("_monthly_1y.png", "")
-#             names_set.add(base)
-
-#     sorted_names = sorted(names_set)
-
-#     return templates.TemplateResponse("chart_index.html", {
-#         "request": request,
-#         "chart_names": sorted_names
-#     })
-
-
-# @app.get("/view/{name}")
-# def view_chart_detail(name: str, request: Request):
-#     suffixes = ["daily_1m", "weekly_3m", "monthly_1y"]
-#     image_paths = [f"{name}_{s}.png" for s in suffixes]
-
-#     return templates.TemplateResponse("chart_detail.html", {
-#         "request": request,
-#         "name": name,
-#         "images": image_paths
-#     })
 
 # --------------------------------------------------
 # 🖼️ 대시보드 화면
 # --------------------------------------------------
 @app.get("/", response_class=HTMLResponse)
 def chart_index(request: Request):
+    # ✅ 키워드 로드
     with open("yeongho/config/keywords.json", encoding="utf-8") as f:
         keywords_data = json.load(f)
-    keyword_list = list(keywords_data.keys())
+    keyword_list = sorted(keywords_data.keys())
 
+    # ✅ 섹터 로드
     sector_csv = pd.read_csv("yeongho/DATA/sector.csv")
-    sector_list = sorted(sector_csv["SECTOR"].unique())
+    all_sectors = sector_csv["SECTOR"].dropna().unique()
+
+    # ✅ 일반 섹터 / 이슈 섹터 분리
+    sector_list = sorted([s for s in all_sectors if "_이슈" not in s and "_팀" not in s])
+    sector_issue_list = sorted([s for s in all_sectors if "_이슈" in s])
 
     return templates.TemplateResponse("chart_index.html", {
         "request": request,
         "keyword_list": keyword_list,
-        "sector_list": sector_list
+        "sector_list": sector_list,
+        "sector_issue_list": sector_issue_list
     })
+
 
 @app.get("/view/keyword/{keyword}", response_class=HTMLResponse)
 def view_keyword_chart(request: Request, keyword: str):
     suffixes = [("1개월", "daily_1m"), ("3개월", "weekly_3m"), ("1년", "monthly_1y")]
     images = []
     for label, suffix in suffixes:
-        filename = f"{keyword}_{suffix}.png"
-        path = f"{filename}"
+        filename = f"{keyword}_keyword_{suffix}.png"
+        path = f"keyword/{filename}"  # ✅ 디렉토리 경로 추가
         if os.path.exists(os.path.join("yeongho/IMG", path)):
             images.append((label, path))
     return templates.TemplateResponse("chart_detail.html", {
@@ -150,20 +126,32 @@ def view_keyword_chart(request: Request, keyword: str):
         "images": images
     })
 
+
 @app.get("/view/sector/{sector}", response_class=HTMLResponse)
 def view_sector_chart(request: Request, sector: str):
     suffixes = [("1개월", "daily_1m"), ("3개월", "weekly_3m"), ("1년", "monthly_1y")]
     images = []
+
+    # ✅ 이슈 섹터는 issue 디렉토리에서 검색
+    if "_이슈" in sector:
+        folder = "issue"
+        title = f"{sector.replace('_이슈', '')} 이슈"
+    else:
+        folder = "sector"
+        title = f"{sector} 섹터"
+
     for label, suffix in suffixes:
         filename = f"{sector}_{suffix}.png"
-        path = f"{filename}"
+        path = f"{folder}/{filename}"
         if os.path.exists(os.path.join("yeongho/IMG", path)):
             images.append((label, path))
+
     return templates.TemplateResponse("chart_detail.html", {
         "request": request,
-        "title": f"{sector} 섹터",
+        "title": title,
         "images": images
     })
+
 
 @app.get("/view/sector", response_class=HTMLResponse)
 def view_total_sector_chart(request: Request):
@@ -171,7 +159,7 @@ def view_total_sector_chart(request: Request):
     images = []
     for label, suffix in suffixes:
         filename = f"sector_{suffix}.png"
-        path = f"{filename}"
+        path = f"sector/{filename}"  # ✅ 디렉토리 경로 추가
         if os.path.exists(os.path.join("yeongho/IMG", path)):
             images.append((label, path))
     return templates.TemplateResponse("chart_detail.html", {

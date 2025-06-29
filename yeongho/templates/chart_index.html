@@ -1,132 +1,157 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>뉴스 차트 대시보드</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
-    <style>
-      body {
-        font-family: 'Noto Sans KR', sans-serif;
-        background-color: #f8f9fc;
-        margin: 0;
-        padding: 0;
-      }
-      
-      header {
-        background-color: #004080;
-        color: white;
-        padding: 20px 40px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      
-      header h1 {
-        font-size: 22px;
-        margin: 0;
-      }
-      
-      nav a {
-        color: white;
-        text-decoration: none;
-        margin-left: 20px;
-        font-weight: bold;
-        font-size: 14px;
-      }
-      
-      nav a:hover {
-        text-decoration: underline;
-        color: #ffd700;
-      }
-      
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 20px;
-      }
-      
-      .section {
-        margin-bottom: 60px;
-      }
-      
-      .section h2 {
-        font-size: 20px;
-        border-bottom: 2px solid #ddd;
-        padding-bottom: 10px;
-        margin-bottom: 20px;
-      }
-      
-      .chart-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 16px;
-      }
-      
-      .chart-card {
-        background-color: white;
-        padding: 16px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        text-align: center;
-        transition: 0.2s ease-in-out;
-      }
-      
-      .chart-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      }
-      
-      .chart-card a {
-        color: #004080;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 16px;
-      }
-      
-      footer {
-        text-align: center;
-        padding: 20px;
-        font-size: 14px;
-        color: #888;
-        background-color: #f0f0f0;
-        margin-top: 60px;
-      }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>뉴스 차트 대시보드</h1>
-      <nav>
-        <a href="/">홈</a>
-        <a href="/view/sector">전체 섹터 차트</a>
-      </nav>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <title>뉴스 차트 대시보드</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background-color: #f5f7fb;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
 
-    <div class="container">
-      <div class="section">
-        <h2>🔑 키워드 차트</h2>
-        <div class="chart-grid">
-          {% for keyword in keyword_list %}
-            <div class="chart-card">
-              <a href="/view/keyword/{{ keyword }}">{{ keyword }}</a>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
+    header {
+      background-color: #002f5f;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-      <div class="section">
-        <h2>📁 섹터별 키워드</h2>
-        <div class="chart-grid">
-          {% for sector in sector_list %}
-            <div class="chart-card">
-              <a href="/view/sector/{{ sector }}">{{ sector }}</a>
-            </div>
-          {% endfor %}
-        </div>
+    header h1 {
+      font-size: 22px;
+      margin: 0;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+      color: #ffd700;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .section {
+      margin-bottom: 60px;
+    }
+
+    .section h2 {
+      font-size: 22px;
+      color: #002f5f;
+      margin-bottom: 10px;
+    }
+
+    .section p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .button-card {
+      display: block;
+      background-color: white;
+      border: 2px solid #dde2e8;
+      border-radius: 10px;
+      padding: 14px 18px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 16px;
+      color: #002f5f;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .button-card:hover {
+      background-color: #004080;
+      color: #fff;
+      border-color: #004080;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      color: #888;
+      background-color: #f0f0f0;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 500px) {
+      .button-card {
+        font-size: 14px;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>뉴스 차트 대시보드</h1>
+    <nav>
+      <a href="/">홈</a>
+      <a href="/view/sector">전체 섹터 차트</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <!-- 📊 섹터별 뉴스 추이 -->
+    <div class="section">
+      <h2>📊 섹터별 뉴스 추이</h2>
+      <p>각 산업 섹터별 기사 수 흐름을 시각적으로 확인할 수 있습니다.</p>
+      <div class="button-grid">
+        {% for sector in sector_list %}
+          <a class="button-card" href="/view/sector/{{ sector }}">{{ sector }} 섹터</a>
+        {% endfor %}
       </div>
     </div>
 
-    <footer>ⓒ 2025 뉴스 차트 시각화 플랫폼. All rights reserved.</footer>
-  </body>
+    <!-- 💡 키워드 비교 -->
+    <div class="section">
+      <h2>💡 섹터 내 키워드 비교</h2>
+      <p>각 섹터에서 어떤 키워드가 주목받고 있는지 비교해보세요.</p>
+      <div class="button-grid">
+        {% for keyword in keyword_list %}
+          <a class="button-card" href="/view/keyword/{{ keyword }}">{{ keyword }}</a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 🧩 이슈 중심 섹터 -->
+    <div class="section">
+      <h2>🧩 섹터별 이슈</h2>
+      <p>이슈 중심의 섹터별 기사 흐름을 살펴보세요.</p>
+      <div class="button-grid">
+        {% for issue_sector in sector_issue_list %}
+          <a class="button-card" href="/view/sector/{{ issue_sector }}">{{ issue_sector.replace("_이슈", "") }} 이슈</a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <footer>ⓒ 2025 뉴스 차트 시각화 플랫폼. All rights reserved.</footer>
+</body>
 </html>
